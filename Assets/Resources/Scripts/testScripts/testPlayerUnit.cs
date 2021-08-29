@@ -2,22 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class testPlayerUnit : seeingUnit
+public class testPlayerUnit : SeeingUnit
 { 
 
-    Weapon weapon;
+    public Weapon weapon;
 
-    public bool firing;
+    public bool shooting;
 
     void Start()
     {
-        Debug.Log("Start was called");
         //the sight script should be the same for all things that use sight, the parent can change parameters in the script itself but
         //there should only be one sight script.
+        
         this.GetComponentInChildren<testSightScript>().controllerScript = this.GetComponent<testPlayerUnit>();
         //FOR TESTING: HARD CODED WEAPON TYPE
-        weapon = new Weapon();
-        firing = false;
+        //weapon = gameObject.AddComponent<Weapon>();
+        shooting = false;
         lowerWeapon();
     }
 
@@ -51,20 +51,23 @@ public class testPlayerUnit : seeingUnit
 
     void readyWeapon ()
     {
-        firing = true;
+        //if  not shooting, start shooting. This should stop from double firing or something else stupid like that
+        if (!shooting)
+            StartCoroutine("startShooting");
     }
 
     void lowerWeapon()
     {
-        firing = false;
+        shooting = false;
     }
 
-    IEnumerator ShotDetector()
+   IEnumerator startShooting()
     {
-        if(firing)
+        shooting = true;
+        while(shooting)
         {
-            GameControllerScript.Instance.shootWeapon(weapon, transform.position);
+            GameControllerScript.Instance.shootWeapon(weapon);
+            yield return new WaitForSeconds(weapon.properties.firerate);
         }
-        yield return new WaitForSeconds(weapon.properties.firerate);
     }
 }

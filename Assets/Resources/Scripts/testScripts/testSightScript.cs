@@ -5,7 +5,7 @@ using UnityEngine;
 public class testSightScript : MonoBehaviour
 {
     public string id;
-    public seeingUnit controllerScript;
+    public SeeingUnit controllerScript;
 
     void Awake()
     {

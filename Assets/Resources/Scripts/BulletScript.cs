@@ -4,23 +4,37 @@ using UnityEngine;
 
 public class BulletScript : MonoBehaviour
 {
+    public float speed;
+    public float activeTime;
 
-    int count = 0;
+    Rigidbody2D thisRigidbody;
 
-    private void OnEnable()
+
+    void Awake()
     {
-        count = 0;
-    }
-
-    public void Update()
-    {
-        float posX = transform.position.x;
-        gameObject.transform.position = new Vector3(posX + 0.2f, 0, 0);
-        count += 1;
-        if (count > 500)
+        if (speed == 0)
         {
-            count = 0;
-            gameObject.SetActive(false);
+            speed = 1000;
         }
+        if(activeTime == 0)
+        {
+            activeTime = 3;
+        }
+
+        thisRigidbody = gameObject.GetComponent<Rigidbody2D>();
+           
     }
+
+    void OnEnable()
+    {
+        StartCoroutine("bulletEnabled");
+    }
+
+    IEnumerator bulletEnabled()
+    {
+        thisRigidbody.AddForce(transform.right * speed);
+        yield return new WaitForSeconds(activeTime);
+        gameObject.SetActive(false);
+    }
+
 }

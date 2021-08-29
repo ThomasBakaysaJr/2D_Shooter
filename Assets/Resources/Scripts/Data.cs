@@ -4,16 +4,37 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public class HealthProperties
+public class UnitProperties
 {
-    public float max;
-    public float current;
+
+    public string name;
+    public float health;
+
+    public float sightRange;
+
+    public UnitProperties()
+    {
+        health = 100;
+        name = "Default";
+        sightRange = 10;
+    }
+
+    //copy the variables from one property to the other
+    public void copy(UnitProperties newProp)
+    {
+        newProp.health = health;
+        newProp.name = name;
+        newProp.sightRange = sightRange;
+    }
+
 }
+
 
 [Serializable]
 public class WeaponProperties
 {
     public string name;
+    public int weaponCode;
     public int caliber;
     public int damage;
     public float firerate;
@@ -22,9 +43,10 @@ public class WeaponProperties
     public WeaponProperties ()
     {
         name = "pistol";
+        weaponCode = 0;
         caliber = 0;
         damage = 100;
-        firerate = 0.2f;
+        firerate = 1f;
         chanceHit = 100;
     }
 }
@@ -32,14 +54,14 @@ public class WeaponProperties
 [Serializable]
 public class Legend
 {
-    public int PISTOLINT;
-    public string PISTOLSTRING;
+    public int PISTOLINT_01;
+    public string PISTOLSTRING_01;
     public int NumberOfWeapons;
 
     public Legend()
     {
-        PISTOLINT = 0;
-        PISTOLSTRING = "pistol";
+        PISTOLINT_01 = 0;
+        PISTOLSTRING_01 = "pistol";
         NumberOfWeapons = 1;
     }
 }
@@ -51,7 +73,6 @@ public class BulletList
 
     public BulletList ()
     {
-        Debug.Log("called");
         bullets = new List<GameObject>();
     }
 
@@ -73,6 +94,5 @@ public class BulletList
 
 public class Data : MonoBehaviour
 {
-    public HealthProperties healthProperties;
-    public WeaponProperties weaponProperties;
+
 }

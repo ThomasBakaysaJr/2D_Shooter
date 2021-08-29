@@ -25,6 +25,7 @@ public class GameControllerScript : MonoBehaviour
 
     private void Awake()
     {
+        finishedStartup = false;
         _Instance = GetComponent<GameControllerScript>();
     }
 
@@ -41,10 +42,12 @@ public class GameControllerScript : MonoBehaviour
     /*
      * PRIVATE VARIABLES. DONT want anyone calling the poolers and creators directly except me.
      */
+    public List<PlayerUnit> currentUnits;
     private List<Weapon> weaponsMission;
     private List<Weapon> weaponsAll;
     private CreatorScript creator;
     private PoolingScript pooler;
+    public bool finishedStartup;
 
     public void Start()
     {
@@ -60,38 +63,40 @@ public class GameControllerScript : MonoBehaviour
         }
 
         legend = new Legend();
+
         pooler.setCreator(creator);
-        //TESTING CODE: add some weapons to not error out
-        WeaponProperties newProp = new WeaponProperties();
-        newProp.caliber = legend.PISTOLINT;
-        newProp.name = "Test Pistol";
-        newProp.firerate = 1;
-        newProp.damage = 10;
-        newProp.chanceHit = 100;
-
-        propertiesWeaponsMission.Add(newProp);
-        propertiesWeaponsMission.Add(newProp);
-
-
+        setupLevel();
         pooler.startPooling();
+        finishedStartup = true;
+    }
+
+    void setupLevel()
+    {
+        int index = 0;
+        for(int count = currentUnits.Count; index < count; index++)
+        {
+            propertiesWeaponsMission.Add(currentUnits[index].weaponPropeties);
+        }
+        index = 0;
     }
 
 
     //called by weapon scripts to get a bullet
     //THIS IS A METHOD THAT CAN FAIL CAUSE OF A BULLET BEING TAKEN BY TWO WEAPONS
-    public void shootWeapon(Weapon weapon, Vector2 newPosition)
+    public void shootWeapon(Weapon weapon)
     {
-        if (!weapon.canShoot())
-            return;
-        Debug.Log("shooting");
         GameObject bullet = null;
         bullet = pooler.getPistolBullet(weapon.properties.caliber);
-
+        //BETTER have my bullet
         Assert.IsNotNull(bullet);
-        bullet.transform.position = newPosition;
+        bullet.transform.position = weapon.exitBullet.transform.position;
         bullet.SetActive(true);
 
-        //look, changes to code!
+    }
+
+    public GameObject getWeapon(int weaponCode)
+    {
+        return creator.getWeapon(weaponCode);
     }
 
 

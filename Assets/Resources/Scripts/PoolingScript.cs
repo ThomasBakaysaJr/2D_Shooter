@@ -51,16 +51,18 @@ public class PoolingScript : MonoBehaviour
 
     public GameObject getPistolBullet(int caliber)
     {
-        int count = bulletsList[caliber].Count();
+        int count;
         GameObject returnObj = null;
 
         while(returnObj == null)
         {
+            count = bulletsList[caliber].Count();
             for (int i = 0; i < count; i++)
             {
                 if (!(returnObj = bulletsList[caliber].GetBullet(i)).activeSelf)
                     return returnObj;
             }
+            returnObj = null;
             //if all pistolBullets are active, ask for more from creatorScript
             createBullet(caliber, 5);
         }
@@ -74,7 +76,7 @@ public class PoolingScript : MonoBehaviour
     {
         GameObject curToSpawn = null;
         
-        if(caliber == legend.PISTOLINT)
+        if(caliber == legend.PISTOLINT_01)
         {
             curToSpawn = creator.getPistolBullet();
         }
@@ -87,12 +89,15 @@ public class PoolingScript : MonoBehaviour
 
     void createMultipleBullet(GameObject toSpawn, int listCode, int howMany)
     {
-        for(int i = 0; i < howMany; i++)
+        toSpawn.SetActive(false);
+        //howMany - 1 because we are adding the bullet that we were giving, since it's also a clone
+        //of the original
+        for(int i = 0; i < (howMany - 1); i++)
         {
             GameObject newObj;
             newObj = Instantiate(toSpawn);
-            newObj.SetActive(false);
             bulletsList[listCode].Add(newObj);
         }
+        bulletsList[listCode].Add(toSpawn);
     }
 }
